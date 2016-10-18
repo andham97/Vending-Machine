@@ -6,5 +6,6 @@ public enum ButtonType {
 	Down,
 	Left,
 	Center,
-	Escape
+	Escape,
+	Quit
 }
