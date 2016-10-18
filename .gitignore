@@ -1,8 +1,4 @@
-# Ignore everything
-*
-
-# Exceptions
-!*.java
-!README.md
-!LICENSE
-!.gitignore
+.DS_Store
+.class
+.project
+.classpath
