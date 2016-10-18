@@ -2,7 +2,7 @@
 *
 
 # Exceptions
-!*/*.java
+!*.java
 !README.md
 !LICENSE
 !.gitignore
