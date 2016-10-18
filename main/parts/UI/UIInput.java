@@ -1,14 +1,19 @@
 package main.parts.UI;
 
+import lejos.hardware.BrickFinder;
 import lejos.hardware.Keys;
 import main.Main;
 import main.enums.ButtonType;
 import main.enums.Priority;
 import main.parts.UIController;
+import main.util.TaskButtonPress;
 
 public class UIInput implements Runnable {
+	
+	private Keys keys;
+	
 	public UIInput(){
-		
+		keys = BrickFinder.getLocal().getKeys();
 	}
 	
 	public void start(){
@@ -18,7 +23,7 @@ public class UIInput implements Runnable {
 	public void run(){
 		while(Main.isRunning){
 			if(checkQuitKeys())
-				UIController.queue.addTask(new TaskButtonPress(Priority.High, Quit.Escape));
+				UIController.queue.addTask(new TaskButtonPress(Priority.High, ButtonType.Quit));
 		}
 	}
 	
