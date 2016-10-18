@@ -6,7 +6,7 @@ import main.Main;
 import main.enums.ButtonType;
 import main.enums.Priority;
 import main.parts.UIController;
-import main.util.TaskButtonPress;
+import main.util.task.TaskButtonPress;
 
 public class UIInput implements Runnable {
 	

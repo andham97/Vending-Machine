@@ -4,7 +4,7 @@ import main.Main;
 import main.enums.Priority;
 import main.parts.sensors.ColorSensorNXT;
 import main.parts.sensors.Sensor;
-import main.util.TaskSensorTriggered;
+import main.util.task.TaskSensorTriggered;
 
 public class SensorController implements Runnable {
 	private Sensor[] sensors = new Sensor[4];

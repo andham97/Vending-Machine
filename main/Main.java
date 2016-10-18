@@ -3,7 +3,8 @@ package main;
 import main.parts.SensorController;
 import main.util.Task;
 import main.util.TaskQueue;
-import main.util.TaskSensorTriggered;
+import main.util.task.TaskSensorTriggered;
+import main.util.task.exceptions.IllegalTaskException;
 
 public class Main {
 	public static boolean isRunning = false;
@@ -27,10 +28,20 @@ public class Main {
 		while(Main.isRunning){
 			Task task = Main.queue.getNext();
 			if(task != null){
-				switch(task.getTaskType()){
-				case SensorTriggered:
-					Main.WALLET += ((TaskSensorTriggered) task).getData();
-					break;
+				try {
+					switch(task.getTaskType()){
+					case SensorTriggered:
+						Main.WALLET += ((TaskSensorTriggered) task).getData();
+						break;
+					case Quit:
+						Main.isRunning = false;
+						break;
+					default:
+						throw new IllegalTaskException("No implementation for task: " + task.getTaskType().toString());
+					}
+				}
+				catch(IllegalTaskException e){
+					e.printStackTrace();
 				}
 			}
 		}

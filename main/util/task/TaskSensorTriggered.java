@@ -1,7 +1,8 @@
-package main.util;
+package main.util.task;
 
 import main.enums.Priority;
 import main.enums.TaskType;
+import main.util.Task;
 
 public class TaskSensorTriggered extends Task {
 	private final int DATA;

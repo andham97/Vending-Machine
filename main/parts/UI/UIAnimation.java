@@ -20,4 +20,20 @@ public class UIAnimation implements Runnable {
 			
 		}
 	}
+	
+	public void up(){
+		
+	}
+	
+	public void down(){
+		
+	}
+	
+	public void enter(){
+		
+	}
+	
+	public void escape(){
+		
+	}
 }

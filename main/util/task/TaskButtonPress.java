@@ -1,8 +1,9 @@
-package main.util;
+package main.util.task;
 
 import main.enums.ButtonType;
 import main.enums.Priority;
 import main.enums.TaskType;
+import main.util.Task;
 
 public class TaskButtonPress extends Task {
 	private final ButtonType DATA;

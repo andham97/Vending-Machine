@@ -5,7 +5,7 @@ public enum ButtonType {
 	Right,
 	Down,
 	Left,
-	Center,
+	Enter,
 	Escape,
 	Quit
 }
