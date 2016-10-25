@@ -1,6 +1,7 @@
 package main;
 
 import main.parts.SensorController;
+import main.parts.UIController;
 import main.util.Task;
 import main.util.TaskQueue;
 import main.util.task.TaskSensorTriggered;
@@ -12,15 +13,21 @@ public class Main {
 	public static int WALLET = 0;
 	
 	private SensorController sensorController;
+	private UIController uiController;
+	private ConnectionController connectionController;
 	
 	public Main(){
 		Main.queue = new TaskQueue();
 		this.sensorController = new SensorController();
+		this.uiController = new UIController();
+		this.connectionController = new ConnectionController();
 	}
 	
 	public Main start(){
 		Main.isRunning = true;
 		this.sensorController.start();
+		this.uiController.start();
+		this.connectionController.start();
 		return this;
 	}
 	

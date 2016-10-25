@@ -8,11 +8,18 @@ import main.util.task.TaskSensorTriggered;
 
 public class SensorController implements Runnable {
 	private Sensor[] sensors = new Sensor[4];
-	private final float CONTROL_VALUE = 0.3f;
+	private final float[] INIT_VALUE;
 	
 	public SensorController(){
-		for(int i = 0; i < sensors.length; i++){
-			sensors[i] = new ColorSensorNXT("S" + (i + 1));
+		for(int i = 0; i < this.sensors.length; i++){
+			this.sensors[i] = new ColorSensorNXT("S" + (i + 1));
+		}
+		this.INIT_VALUE = new float[this.sensors.length];
+		for(int i = 0; i < this.sensors.length; i++){
+			for(int j = 0; j < 50; j++){
+				this.sensors[i].update();
+			}
+			this.INIT_VALUE[i] = this.sensors[i].getValue();
 		}
 	}
 	
@@ -24,7 +31,7 @@ public class SensorController implements Runnable {
 		while(Main.isRunning){
 			for(int i = 0; i < this.sensors.length; i++){
 				this.sensors[i].update();
-				if(this.sensors[i].getValue() == this.CONTROL_VALUE){
+				if(this.sensors[i].getValue() != this.INIT_VALUE[i]){
 					int data = 0;
 					switch(i){
 					case 0:
