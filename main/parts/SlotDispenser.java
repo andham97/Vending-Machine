@@ -42,9 +42,7 @@ public class SlotDispenser {
             
             // TODO This sequence including value of ROTATION_ANGLE needs testing
             motor.rotate(ROTATION_ANGLE);
-            motor.waitComplete();
             motor.rotate(-ROTATION_ANGLE);
-            motor.waitComplete();
         }
     }
 }
