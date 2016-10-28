@@ -24,12 +24,6 @@ public class Menu {
     private boolean keyReleased = true;
     private int menuLevel = 0;
 
-    int idRight = Keys.ID_RIGHT;
-    int idLeft = Keys.ID_LEFT;
-    int idUp = Keys.ID_UP;
-    int idDown = Keys.ID_DOWN;
-    int idEnter = Keys.ID_ENTER;
-
     public Menu() {
         keys = BrickFinder.getLocal().getKeys();
         screenWidth = graphics.getWidth();
@@ -123,13 +117,7 @@ public class Menu {
         }
     }
 
-    public void mainLoop() {
-        while (!checkQuitKeys()) {
-            checkKeys();
-        }
-    }
-
-    private void checkKeys() {
+    /*private void checkKeys() {
         int keyVal = keys.getButtons();
         if (keyReleased) {
             if (menuLevel == 0) {
@@ -166,7 +154,7 @@ public class Menu {
         } else if (keyVal == 0) {
             keyReleased = true;
         }
-    }
+    }*/
 
     public void purchaseItem() {
         //Purchase code goes here.
@@ -189,11 +177,5 @@ public class Menu {
     private void updateMenuLevel(int change) {
         menuLevel += change;
         drawMenu();
-    }
-
-    public boolean checkQuitKeys() {
-        int keyVal = keys.getButtons();
-        return ((keyVal & idRight) != 0 && (keyVal & idLeft) != 0);
-
     }
 }
