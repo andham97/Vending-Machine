@@ -11,6 +11,7 @@ import main.util.task.TaskButtonPress;
 public class UIInput implements Runnable {
 
 	private Keys keys;
+	private boolean keyReleased = true;
 
 	public UIInput() {
 		this.keys = BrickFinder.getLocal().getKeys();
@@ -22,21 +23,27 @@ public class UIInput implements Runnable {
 
 	public void run() {
 		while (Main.isRunning) {
-			if (checkQuitKeys())
-				UIController.queue.addTask(new TaskButtonPress(Priority.High, ButtonType.Quit));
-			else {
-				if((Keys.ID_ESCAPE & this.keys.getButtons()) != 0){
-					UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Escape));
+			if(this.keyReleased){
+				if (checkQuitKeys())
+					UIController.queue.addTask(new TaskButtonPress(Priority.High, ButtonType.Quit));
+				else {
+					int keyVal = this.keys.getButtons();
+					if((Keys.ID_UP & keyVal) != 0){
+						this.keyReleased = false;
+						UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Up));
+					}
+					if((Keys.ID_DOWN & keyVal) != 0){
+						this.keyReleased = false;
+						UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Down));
+					}
+					if((Keys.ID_ENTER & keyVal) != 0){
+						this.keyReleased = false;
+						UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Enter));
+					}
 				}
-				if((Keys.ID_UP & this.keys.getButtons()) != 0){
-					UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Up));
-				}
-				if((Keys.ID_DOWN & this.keys.getButtons()) != 0){
-					UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Down));
-				}
-				if((Keys.ID_ENTER & this.keys.getButtons()) != 0){
-					UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Enter));
-				}
+			}
+			else if(this.keys.getButtons() == 0){
+				this.keyReleased = true;
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import main.Main;
 import main.enums.ButtonType;
 import main.enums.Priority;
 import main.enums.exceptions.IllegalButtonTypeExteption;
-import main.parts.UI.UIAnimation;
+import main.parts.UI.Menu;
 import main.parts.UI.UIInput;
 import main.util.Task;
 import main.util.TaskQueue;
@@ -16,17 +16,16 @@ public class UIController implements Runnable {
 	public static TaskQueue queue;
 	
 	private UIInput input;
-	private UIAnimation animation;
+	private Menu menu;
 	
 	public UIController(){
 		UIController.queue = new TaskQueue();
-		this.animation = new UIAnimation();
+		this.menu = new Menu();
 		this.input = new UIInput();
 	}
 	
 	public void start(){
 		new Thread(this).start();
-		this.animation.start();
 		this.input.start();
 	}
 	
@@ -42,20 +41,16 @@ public class UIController implements Runnable {
 						case Quit:
 							Main.queue.addTask(new TaskQuit(Priority.High));
 						case Up:
-							this.animation.up();
-							break;
 						case Down:
-							this.animation.down();
-							break;
 						case Enter:
-							this.animation.enter();
-							break;
-						case Escape:
-							this.animation.escape();
+							this.menu.checkKeys(bt);
 							break;
 						default:
 							throw new IllegalButtonTypeExteption("Not a registered button: " + bt.toString());
 						}
+					case Dispense:
+						Main.queue.addTask(task);
+						break;
 					default:
 						throw new IllegalTaskException("No implementation for task: " + task.getTaskType().toString());
 					}

@@ -43,6 +43,9 @@ public class Main {
 					case Quit:
 						Main.isRunning = false;
 						break;
+					case Dispense:
+						ConnectionController.queue.addTask(task);
+						break;
 					default:
 						throw new IllegalTaskException("No implementation for task: " + task.getTaskType().toString());
 					}

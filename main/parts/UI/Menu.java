@@ -1,9 +1,9 @@
 package main.parts.UI;
 
-import lejos.hardware.BrickFinder;
-import lejos.hardware.Keys;
 import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.*;
+import lejos.hardware.lcd.Font;
+import lejos.hardware.lcd.GraphicsLCD;
+import main.enums.ButtonType;
 
 public class Menu {
 
@@ -14,18 +14,13 @@ public class Menu {
     String[] confArray = new String[]{"Y", "N"};
 
     private GraphicsLCD graphics = LocalEV3.get().getGraphicsLCD();
-    private Keys keys;
     private final int screenWidth;
     private final int screenHeight;
     private int menuSelection = 0;
     private int confSelection = 0;
-    private int itemHLimit = itemArray.length - 1;
-    private int itemLLimit = 0;
-    private boolean keyReleased = true;
     private int menuLevel = 0;
 
     public Menu() {
-        keys = BrickFinder.getLocal().getKeys();
         screenWidth = graphics.getWidth();
         screenHeight = graphics.getHeight();
     }
@@ -117,44 +112,26 @@ public class Menu {
         }
     }
 
-    /*private void checkKeys() {
-        int keyVal = keys.getButtons();
-        if (keyReleased) {
-            if (menuLevel == 0) {
-                if ((keyVal & idUp) != 0) {
-                    keyReleased = false;
-                    if (menuSelection > itemLLimit) {
-                        updateMenuSelection(-1);
-                    } else {
-                        updateMenuSelection(+itemHLimit);
-                    }
-                } else if ((keyVal & idDown) != 0) {
-                    keyReleased = false;
-                    if (menuSelection < itemHLimit) {
-                        updateMenuSelection(1);
-                    } else {
-                        updateMenuSelection(-itemHLimit);
-                    }
-                } else if ((keyVal & idEnter) != 0) {
-                    keyReleased = false;
-                    updateMenuLevel(1);
-                }
-            } else if (menuLevel == 1) {
-                if ((keyVal & idUp) != 0 || (keyVal & idDown) != 0) {
-                    keyReleased = false;
-                    updateConfirmationSelection();
-                } else if ((keyVal & idEnter) != 0) {
-                    if (confSelection == 0) {
-                        purchaseItem();
-                    }
-                    keyReleased = false;
-                    updateMenuLevel(-1);
-                }
+    public void checkKeys(ButtonType keyVal) {
+        if (menuLevel == 0) {
+            if (keyVal == ButtonType.Up) {
+                updateMenuSelection(-1);
+            } else if (keyVal == ButtonType.Down) {
+                updateMenuSelection(1);
+            } else if (keyVal == ButtonType.Enter) {
+                updateMenuLevel(1);
             }
-        } else if (keyVal == 0) {
-            keyReleased = true;
+        } else if (menuLevel == 1) {
+            if (keyVal == ButtonType.Up || keyVal == ButtonType.Down) {
+                updateConfirmationSelection();
+            } else if (keyVal == ButtonType.Enter) {
+                if (confSelection == 0) {
+                    purchaseItem();
+                }
+                updateMenuLevel(-1);
+            }
         }
-    }*/
+    }
 
     public void purchaseItem() {
         //Purchase code goes here.
@@ -162,6 +139,12 @@ public class Menu {
 
     private void updateMenuSelection(int change) {
         menuSelection += change;
+        if(menuSelection == itemArray.length){
+        	menuSelection = 0;
+        }
+        else if(menuSelection < 0){
+        	menuSelection = itemArray.length - 1;
+        }
         drawMenu();
     }
 
