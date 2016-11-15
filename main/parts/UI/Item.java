@@ -1,14 +1,18 @@
 package main.parts.UI;
 
+import main.enums.SlotID;
+
 public class Item {
 	
 	private String itemName;
 	private int itemPrice;
+        private SlotID slotId;
         private int stockSize;
 	//Constructor for the Item class, sets the name and price
-	public Item(String newName, int newPrice){
+	public Item(String newName, int newPrice, SlotID slotId){
 		itemName = newName;
 		itemPrice = newPrice;
+                this.slotId = slotId;
 	}
 	//Returns the name of the item
 	public String getName(){
@@ -18,6 +22,9 @@ public class Item {
 	public int getPrice(){
 		return itemPrice;
 	}
+        public SlotID getSlotId() {
+            return slotId;
+        }
         //Sets the size of the stock according to the parameter
         public void setStockSize(int newSize){
             stockSize = newSize;

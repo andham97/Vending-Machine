@@ -6,6 +6,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 
 public class ColorSensorEV3 implements Sensor {
+
     private EV3ColorSensor colorSensor;
     public boolean running = true;
     private SampleProvider colorProvider;
@@ -14,12 +15,12 @@ public class ColorSensorEV3 implements Sensor {
     public ColorSensorEV3(String portName) {
         Port port = LocalEV3.get().getPort(portName);
         colorSensor = new EV3ColorSensor(port);
-        colorProvider = colorSensor.getColorIDMode();
+        colorProvider = colorSensor.getRedMode();
         colorSample = new float[colorProvider.sampleSize()];
     }
 
     public void update() {
-    	colorProvider.fetchSample(colorSample, 0);
+        colorProvider.fetchSample(colorSample, 0);
     }
 
     public float getValue() {

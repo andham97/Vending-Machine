@@ -15,7 +15,7 @@ public class TaskQueue {
 			Task tmp = this.tasks.get(i);
 			if(curTask == null)
 				curTask = tmp;
-			else if(tmp.checkPriorityLevel(curTask.getPriority()))
+			else if(tmp != null && tmp.checkPriorityLevel(curTask.getPriority()))
 				curTask = tmp;
 		}
 		tasks.remove(curTask);
