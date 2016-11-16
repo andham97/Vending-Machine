@@ -1,10 +1,14 @@
 package main.parts.UI;
 
+import lejos.hardware.lcd.Image;
+
+
 public class Item {
 	
 	private String itemName;
 	private int itemPrice;
         private int stockSize;
+        
 	//Constructor for the Item class, sets the name and price
 	public Item(String newName, int newPrice){
 		itemName = newName;
