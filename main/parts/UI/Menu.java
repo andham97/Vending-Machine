@@ -14,7 +14,7 @@ import main.Stock;
 import main.enums.ButtonType;
 import main.enums.Priority;
 import main.enums.SlotID;
-import main.util.task.TaskSlotDispense;
+import main.util.task.TaskDispenseSlot;
 
 public class Menu {
 
@@ -154,7 +154,7 @@ public class Menu {
     public void purchaseItem() {
         Item selected = itemArray[menuSelection];
         selected.reduceStockSize();
-        SlaveController.queue.addTask(new TaskSlotDispense(Priority.Medium, selected.getSlotId()));
+        SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
         Main.WALLET -= selected.getPrice();
         Stock.save(itemArray);
     }

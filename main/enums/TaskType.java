@@ -1,7 +1,7 @@
 package main.enums;
 
 public enum TaskType {
-	SensorTriggered,
+	MoneyAdded,
 	ButtonPress,
 	Quit,
 	Dispense

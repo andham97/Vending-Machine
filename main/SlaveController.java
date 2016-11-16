@@ -11,8 +11,8 @@ import java.net.Socket;
 import main.enums.Priority;
 import main.util.Task;
 import main.util.TaskQueue;
-import main.util.task.TaskSensorTriggered;
-import main.util.task.TaskSlotDispense;
+import main.util.task.TaskMoneyAdded;
+import main.util.task.TaskDispenseSlot;
 import main.util.task.exceptions.IllegalTaskException;
 
 public class SlaveController implements Runnable {
@@ -42,9 +42,10 @@ public class SlaveController implements Runnable {
                     if (in.available() >= 8) {
                         int packetType = in.readInt();
                         int packetPayload = in.readInt();
+                        
                         switch (packetType) {
-                            case ComProtocol.PACKET_SENSOR_TRIGGERED:
-                                Main.queue.addTask(new TaskSensorTriggered(Priority.Low, packetPayload));
+                            case ComProtocol.PACKET_MONEY_ADDED:
+                                Main.queue.addTask(new TaskMoneyAdded(Priority.Low, packetPayload));
                                 break;
 
                             default:
@@ -65,7 +66,7 @@ public class SlaveController implements Runnable {
                             case Dispense:
                                 // Sends a PACKET_DISPENSE_SLOT packet to slave
                                 out.writeInt(ComProtocol.PACKET_DISPENSE_SLOT);
-                                out.writeInt(((TaskSlotDispense) task).getData());
+                                out.writeInt(((TaskDispenseSlot) task).getData());
                                 out.flush();
                                 break;
 

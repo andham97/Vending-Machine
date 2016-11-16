@@ -4,7 +4,7 @@ import main.parts.SensorController;
 import main.parts.UIController;
 import main.util.Task;
 import main.util.TaskQueue;
-import main.util.task.TaskSensorTriggered;
+import main.util.task.TaskMoneyAdded;
 import main.util.task.exceptions.IllegalTaskException;
 
 public class Main {
@@ -38,16 +38,19 @@ public class Main {
             if (task != null) {
                 try {
                     switch (task.getTaskType()) {
-                        case SensorTriggered:
-                            Main.WALLET += ((TaskSensorTriggered) task).getData();
+                        case MoneyAdded:
+                            Main.WALLET += ((TaskMoneyAdded) task).getData();
                             uiController.render();
                             break;
+                            
                         case Quit:
                             Main.isRunning = false;
                             break;
+                            
                         case Dispense:
                             SlaveController.queue.addTask(task);
                             break;
+                            
                         default:
                             throw new IllegalTaskException("No implementation for task: " + task.getTaskType().toString());
                     }

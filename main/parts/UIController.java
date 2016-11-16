@@ -18,13 +18,13 @@ public class UIController implements Runnable {
 
     private UIInput input;
     private Menu menu;
-    
-    private boolean needsRender = false;
+    private boolean needsRender;
 
     public UIController() {
         UIController.queue = new TaskQueue();
         this.menu = new Menu();
         this.input = new UIInput();
+        needsRender = false;
     }
 
     public void start() {

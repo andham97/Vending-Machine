@@ -102,7 +102,7 @@ public class SlaveMain {
     
     public synchronized void sendSensorTriggeredPacket(int payload) {
         try {
-            out.writeInt(ComProtocol.PACKET_SENSOR_TRIGGERED);
+            out.writeInt(ComProtocol.PACKET_MONEY_ADDED);
             out.writeInt(payload);
             out.flush();
         }

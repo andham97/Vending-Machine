@@ -4,7 +4,7 @@ import main.Main;
 import main.enums.Priority;
 import main.parts.sensors.ColorSensorNXT;
 import main.parts.sensors.Sensor;
-import main.util.task.TaskSensorTriggered;
+import main.util.task.TaskMoneyAdded;
 
 public class SensorController implements Runnable {
 	private Sensor[] sensors = new Sensor[4];
@@ -47,7 +47,7 @@ public class SensorController implements Runnable {
 						data = -9;
 						break;
 					}
-					Main.queue.addTask(new TaskSensorTriggered(Priority.Low, data));
+					Main.queue.addTask(new TaskMoneyAdded(Priority.Low, data));
 				}
 			}
 		}
