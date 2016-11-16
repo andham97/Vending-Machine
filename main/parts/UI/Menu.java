@@ -1,15 +1,26 @@
 package main.parts.UI;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
+import main.Main;
+import main.SlaveController;
+import main.Stock;
 import main.enums.ButtonType;
+import main.enums.Priority;
+import main.enums.SlotID;
+import main.util.task.TaskDispenseSlot;
 
 public class Menu {
 
-    Item item1 = new Item("Melkerull", 20);
-    Item item2 = new Item("Smil", 20);
-    Item item3 = new Item("Melkebart", 15);
+    Item item1 = new Item("Melkerull", 20, SlotID.Bottom);
+    Item item2 = new Item("Smil", 20, SlotID.Middle);
+    Item item3 = new Item("Melkebart", 15, SlotID.Top);
     Item[] itemArray = new Item[]{item1, item2, item3};
     String[] confArray = new String[]{"Y", "N"};
 
@@ -21,6 +32,7 @@ public class Menu {
     private int menuLevel = 0;
 
     public Menu() {
+        Stock.load(itemArray);
         screenWidth = graphics.getWidth();
         screenHeight = graphics.getHeight();
     }
@@ -30,6 +42,10 @@ public class Menu {
         drawChangeSection();
         if (menuLevel == 0) {
             for (int nr = 0; nr < itemArray.length; nr++) {
+                if (itemArray[nr].getStockSize() <= 0) {
+                    continue;
+                }
+                
                 if (nr == menuSelection) {
                     drawOptionRect(nr + 1, itemArray[nr], true);
                 } else {
@@ -47,7 +63,7 @@ public class Menu {
         int height = screenHeight / 4;
         graphics.drawRect(posX, 0, width, height);
         graphics.setFont(Font.getLargeFont());
-        graphics.drawString("20kr", posX, 0, 0);
+        graphics.drawString(Main.WALLET + "kr", posX, 0, 0);
         int lineXAngle1 = 55;
         int lineXAngle2 = 70;
         graphics.drawLine(0, 0, 0, height);
@@ -119,7 +135,9 @@ public class Menu {
             } else if (keyVal == ButtonType.Down) {
                 updateMenuSelection(1);
             } else if (keyVal == ButtonType.Enter) {
-                updateMenuLevel(1);
+                if(Main.WALLET >= itemArray[menuSelection].getPrice()
+                        && itemArray[menuSelection].getStockSize() > 0)
+                    updateMenuLevel(1);
             }
         } else if (menuLevel == 1) {
             if (keyVal == ButtonType.Up || keyVal == ButtonType.Down) {
@@ -134,7 +152,11 @@ public class Menu {
     }
 
     public void purchaseItem() {
-        //Purchase code goes here.
+        Item selected = itemArray[menuSelection];
+        selected.reduceStockSize();
+        SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
+        Main.WALLET -= selected.getPrice();
+        Stock.save(itemArray);
     }
 
     private void updateMenuSelection(int change) {

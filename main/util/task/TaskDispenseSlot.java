@@ -5,10 +5,10 @@ import main.enums.SlotID;
 import main.enums.TaskType;
 import main.util.Task;
 
-public class TaskSlotDispense extends Task {
+public class TaskDispenseSlot extends Task {
 	private int DATA;
 
-	public TaskSlotDispense(Priority p, SlotID id) {
+	public TaskDispenseSlot(Priority p, SlotID id) {
 		super(p, TaskType.Dispense);
 		switch(id){
 		case Bottom:

@@ -6,7 +6,8 @@ import lejos.hardware.sensor.NXTLightSensor;
 import lejos.robotics.SampleProvider;
 
 public class ColorSensorNXT implements Sensor {
-	private NXTLightSensor colorSensor;
+
+    private NXTLightSensor colorSensor;
     public boolean running = true;
     private SampleProvider colorProvider;
     private float[] colorSample;
@@ -19,10 +20,10 @@ public class ColorSensorNXT implements Sensor {
     }
 
     public void update() {
-    	colorProvider.fetchSample(colorSample, 0);
+        colorProvider.fetchSample(colorSample, 0);
     }
 
     public float getValue() {
-    	return colorSample[0];
+        return colorSample[0];
     }
 }
