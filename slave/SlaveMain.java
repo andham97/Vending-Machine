@@ -120,14 +120,14 @@ public class SlaveMain {
         }
     }
     
-    public synchronized void sendSensorTriggeredPacket(int payload) {
+    public synchronized void sendMoneyAddedPacket(int payload) {
         try {
             out.writeInt(ComProtocol.PACKET_MONEY_ADDED);
             out.writeInt(payload);
             out.flush();
         }
         catch (IOException ex) {
-            System.err.println("Error sending PACKET_SENSOR_TRIGGERED: "
+            System.err.println("Error sending PACKET_MONEY_ADDED: "
                     + ex.getMessage());
         }
     }

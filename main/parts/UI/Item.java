@@ -9,6 +9,13 @@ public class Item {
         private SlotID slotId;
         private int stockSize;
         
+        /**
+         * Copy-constructor.
+         * @param old 
+         */
+        public Item(Item old) {
+            this(old.itemName, old.itemPrice, old.slotId);
+        }
 	//Constructor for the Item class, sets the name and price
 	public Item(String newName, int newPrice, SlotID slotId){
 		itemName = newName;

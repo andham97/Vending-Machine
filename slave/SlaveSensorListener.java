@@ -73,7 +73,7 @@ public class SlaveSensorListener implements Runnable {
                             break;
                     }
                     
-                    slaveMain.sendSensorTriggeredPacket(data);
+                    slaveMain.sendMoneyAddedPacket(data);
                 }
                 
                 triggeredLastTime[i] = isTriggered;
