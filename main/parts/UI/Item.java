@@ -1,7 +1,5 @@
 package main.parts.UI;
 
-import lejos.hardware.lcd.Image;
-
 import main.enums.SlotID;
 
 public class Item {
