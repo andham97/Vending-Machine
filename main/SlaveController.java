@@ -69,6 +69,20 @@ public class SlaveController implements Runnable {
                                 out.writeInt(((TaskDispenseSlot) task).getData());
                                 out.flush();
                                 break;
+                                
+                            case StoreMoney:
+                                // Sends a PACKET_STORE_MONEY packet to slave
+                                out.writeInt(ComProtocol.PACKET_STORE_MONEY);
+                                out.writeInt(0);
+                                out.flush();
+                                break;
+                                
+                            case RefundMoney:
+                                // Sends a PACKET_REFUND_MONEY packet to slave
+                                out.writeInt(ComProtocol.PACKET_REFUND_MONEY);
+                                out.writeInt(0);
+                                out.flush();
+                                break;
 
                             default:
                                 throw new IllegalTaskException("No implementation for task: " + task.getTaskType().toString());

@@ -7,6 +7,8 @@ import main.enums.ButtonType;
 import main.enums.Priority;
 import main.parts.UIController;
 import main.util.task.TaskButtonPress;
+import main.util.task.TaskQuit;
+import main.util.task.TaskRefillStock;
 
 public class UIInput implements Runnable {
 
@@ -25,11 +27,10 @@ public class UIInput implements Runnable {
         while (Main.isRunning) {
             if (this.keyReleased) {
                 if (checkQuitKeys()) {
-                    UIController.queue.addTask(new TaskButtonPress(Priority.High, ButtonType.Quit));
+                    Main.queue.addTask(new TaskQuit(Priority.High));
                 } else if (checkAdminKeys()) {
-                    
-                }
-                else {
+                    Main.queue.addTask(new TaskRefillStock(Priority.Low));
+                } else {
                     int keyVal = this.keys.getButtons();
                     if ((Keys.ID_UP & keyVal) != 0) {
                         this.keyReleased = false;
@@ -38,6 +39,10 @@ public class UIInput implements Runnable {
                     if ((Keys.ID_DOWN & keyVal) != 0) {
                         this.keyReleased = false;
                         UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Down));
+                    }
+                    if ((Keys.ID_ESCAPE & keyVal) != 0) {
+                        this.keyReleased = false;
+                        UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Escape));
                     }
                     if ((Keys.ID_ENTER & keyVal) != 0) {
                         this.keyReleased = false;
@@ -51,8 +56,7 @@ public class UIInput implements Runnable {
     }
 
     private boolean checkAdminKeys() {
-        int keyVal = keys.getButtons();
-        return keyVal == (Keys.ID_ESCAPE | Keys.ID_DOWN);
+        return keys.getButtons() == (Keys.ID_RIGHT | Keys.ID_UP);
     }
 
     private boolean checkQuitKeys() {

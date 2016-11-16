@@ -27,12 +27,14 @@ public class SlaveMain {
     private RegulatedMotor slotMotorBottom;
     private RegulatedMotor slotMotorMiddle;
     private RegulatedMotor slotMotorTop;
+    private RegulatedMotor moneyShelfMotor;
     
     public SlaveMain() {
         listener = new SlaveSensorListener(this);
         slotMotorBottom = Motor.A;
         slotMotorMiddle = Motor.B;
         slotMotorTop = Motor.C;
+        moneyShelfMotor = Motor.D;
     }
     
     private void connectToMaster() throws IOException {
@@ -62,6 +64,14 @@ public class SlaveMain {
                         case ComProtocol.PACKET_DISPENSE_SLOT:
                             dispenseSlot(packetPayload);
                             break;
+                            
+                        case ComProtocol.PACKET_STORE_MONEY:
+                            storeMoney();
+                            break;
+                            
+                        case ComProtocol.PACKET_REFUND_MONEY:
+                            refundMoney();
+                            break;
 
                         default:
                             System.out.println("Unknown packet: " + packetType
@@ -79,6 +89,16 @@ public class SlaveMain {
         out.close();
         in.close();
         connection.close();
+    }
+    
+    private void storeMoney() {
+        moneyShelfMotor.rotate(-90);
+        moneyShelfMotor.rotate(90);
+    }
+    
+    private void refundMoney() {
+        moneyShelfMotor.rotate(90);
+        moneyShelfMotor.rotate(-90);
     }
     
     private void dispenseSlot(int slotNum) {

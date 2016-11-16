@@ -52,13 +52,10 @@ public class UIController implements Runnable {
                         case ButtonPress:
                             ButtonType bt = ((TaskButtonPress) task).getData();
                             switch (bt) {
-                                case Quit:
-                                    Main.queue.addTask(new TaskQuit(Priority.High));
-                                    break;
-                                    
                                 case Up:
                                 case Down:
                                 case Enter:
+                                case Escape:
                                     this.menu.checkKeys(bt);
                                     break;
                                     

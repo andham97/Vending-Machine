@@ -1,6 +1,9 @@
 package main;
 
+import java.util.ArrayList;
+import lejos.hardware.Sound;
 import main.parts.SensorController;
+import main.parts.UI.Item;
 import main.parts.UIController;
 import main.util.Task;
 import main.util.TaskQueue;
@@ -26,7 +29,6 @@ public class Main {
 
     public Main start() {
         Main.isRunning = true;
-        //this.sensorController.start();
         this.uiController.start();
         this.slaveController.start();
         return this;
@@ -49,6 +51,11 @@ public class Main {
                             
                         case Dispense:
                             SlaveController.queue.addTask(task);
+                            break;
+                            
+                        case RefillStock:
+                            Stock.refill();
+                            uiController.render();
                             break;
                             
                         default:

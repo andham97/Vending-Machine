@@ -4,5 +4,8 @@ public enum TaskType {
 	MoneyAdded,
 	ButtonPress,
 	Quit,
-	Dispense
+	Dispense,
+        RefillStock,
+        StoreMoney,
+        RefundMoney
 }

@@ -1,10 +1,6 @@
 package main.parts.UI;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.lcd.Font;
 import lejos.hardware.lcd.GraphicsLCD;
@@ -15,6 +11,8 @@ import main.enums.ButtonType;
 import main.enums.Priority;
 import main.enums.SlotID;
 import main.util.task.TaskDispenseSlot;
+import main.util.task.TaskRefundMoney;
+import main.util.task.TaskStoreMoney;
 
 public class Menu {
 
@@ -22,6 +20,7 @@ public class Menu {
     Item item2 = new Item("Smil", 20, SlotID.Middle);
     Item item3 = new Item("Melkebart", 15, SlotID.Top);
     Item[] itemArray = new Item[]{item1, item2, item3};
+    ArrayList<Item> items;
     String[] confArray = new String[]{"Y", "N"};
 
     private GraphicsLCD graphics = LocalEV3.get().getGraphicsLCD();
@@ -32,7 +31,7 @@ public class Menu {
     private int menuLevel = 0;
 
     public Menu() {
-        Stock.load(itemArray);
+        items = Stock.get();
         screenWidth = graphics.getWidth();
         screenHeight = graphics.getHeight();
     }
@@ -41,20 +40,26 @@ public class Menu {
         graphics.clear();
         drawChangeSection();
         if (menuLevel == 0) {
-            for (int nr = 0; nr < itemArray.length; nr++) {
-                if (itemArray[nr].getStockSize() <= 0) {
-                    continue;
+            int nr = 0;
+            if (items.size() > 0) {
+                for (Item item : items) {
+                    if (nr == menuSelection) {
+                        drawOptionRect(nr + 1, item, true);
+                    } else {
+                        drawOptionRect(nr + 1, item, false);
+                    }
+                    nr++;
                 }
-                
-                if (nr == menuSelection) {
-                    drawOptionRect(nr + 1, itemArray[nr], true);
-                } else {
-                    drawOptionRect(nr + 1, itemArray[nr], false);
-                }
+            } else {
+                drawOutOfStockNotice();
             }
         } else if (menuLevel == 1) {
-            drawConfirmOption(itemArray[menuSelection]);
+            drawConfirmOption(items.get(menuSelection));
         }
+    }
+
+    private void drawOutOfStockNotice() {
+        // TODO
     }
 
     private void drawChangeSection() {
@@ -129,15 +134,20 @@ public class Menu {
     }
 
     public void checkKeys(ButtonType keyVal) {
-        if (menuLevel == 0) {
+        if (menuLevel == 0 && items.size() > 0) {
             if (keyVal == ButtonType.Up) {
                 updateMenuSelection(-1);
             } else if (keyVal == ButtonType.Down) {
                 updateMenuSelection(1);
             } else if (keyVal == ButtonType.Enter) {
-                if(Main.WALLET >= itemArray[menuSelection].getPrice()
-                        && itemArray[menuSelection].getStockSize() > 0)
+                if (Main.WALLET >= items.get(menuSelection).getPrice()
+                        && items.get(menuSelection).getStockSize() > 0) {
                     updateMenuLevel(1);
+                }
+            } else if (keyVal == ButtonType.Escape) {
+                SlaveController.queue.addTask(new TaskRefundMoney(Priority.High));
+                Main.WALLET = 0;
+                drawMenu();
             }
         } else if (menuLevel == 1) {
             if (keyVal == ButtonType.Up || keyVal == ButtonType.Down) {
@@ -152,20 +162,23 @@ public class Menu {
     }
 
     public void purchaseItem() {
-        Item selected = itemArray[menuSelection];
+        Item selected = items.get(menuSelection);
         selected.reduceStockSize();
+        if (selected.getStockSize() <= 0) {
+            items.remove(menuSelection);
+        }
         SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
+        SlaveController.queue.addTask(new TaskStoreMoney(Priority.High));
         Main.WALLET -= selected.getPrice();
-        Stock.save(itemArray);
+        Stock.save();
     }
 
     private void updateMenuSelection(int change) {
         menuSelection += change;
-        if(menuSelection == itemArray.length){
-        	menuSelection = 0;
-        }
-        else if(menuSelection < 0){
-        	menuSelection = itemArray.length - 1;
+        if (menuSelection >= items.size()) {
+            menuSelection = 0;
+        } else if (menuSelection < 0) {
+            menuSelection = items.size() - 1;
         }
         drawMenu();
     }
