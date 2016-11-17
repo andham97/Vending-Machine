@@ -16,34 +16,57 @@ public class Item {
         public Item(Item old) {
             this(old.itemName, old.itemPrice, old.slotId);
         }
-	//Constructor for the Item class, sets the name and price
+        /**
+         *Constructor for the Item class, sets the name and price
+         * @param newName
+         * @param newPrice
+         * @param slotId 
+         */
 	public Item(String newName, int newPrice, SlotID slotId){
 		itemName = newName;
 		itemPrice = newPrice;
                 this.slotId = slotId;
 	}
-	//Returns the name of the item
+        /**
+         * Returns the name of the item
+         * @return 
+         */
 	public String getName(){
 		return itemName;
 	}
-	//Returns the price of the item
+        /**
+         * Returns the price of the item
+         * @return 
+         */
 	public int getPrice(){
 		return itemPrice;
 	}
+        /**
+         * returns slotID
+         * @return 
+         */
         public SlotID getSlotId() {
             return slotId;
         }
-        //Sets the size of the stock according to the parameter
+        /**
+         * Sets the size of the stock according to the parameter
+         * @param newSize 
+         */
         public void setStockSize(int newSize){
             stockSize = newSize;
         }
-        //Reduces the stocksize by one
+        /**
+         * Reduces the stocksize by one
+         */
         public void reduceStockSize(){
             if(stockSize > 0){
                 stockSize --;
             }
         }
-        //Returns the stocksize
+        /**
+         * Returns the stocksize
+         * @return 
+         */
         public int getStockSize(){
             return stockSize;
         }

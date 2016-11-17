@@ -69,7 +69,9 @@ public class Menu {
         graphics.setFont(Font.getLargeFont());
         graphics.drawString("Out of stock!", 0, height, 0);
     }
-
+    /**
+     * Draws the top section that shows the user's money, and the return button
+     */
     private void drawChangeSection() {
         int posX = screenWidth - 80;
         int width = screenWidth - posX;
@@ -87,7 +89,10 @@ public class Menu {
         graphics.setFont(Font.getDefaultFont());
         graphics.drawString("Veksel", 0, height / 4, 0);
     }
-
+    /**
+     * Draws the confirmation options in the second level of the menu
+     * @param item 
+     */
     private void drawConfirmOption(Item item) {
         String text = item.getName();
         int price = item.getPrice();
@@ -113,13 +118,26 @@ public class Menu {
             }
         }
     }
-
+    /**
+     * Draws the confirmation buttons for purchase
+     * @param xPos
+     * @param yPos
+     * @param width
+     * @param height
+     * @param confString
+     * @param selected 
+     */
     private void drawConfButton(int xPos, int yPos, int width, int height, String confString, boolean selected) {
         drawRectBetter(xPos, yPos, width, height, selected);
         graphics.setFont(Font.getLargeFont());
         graphics.drawString(confString, xPos + (width / 2 - 10), yPos + (height / 2 - 10), 0, selected);
     }
-
+    /**
+     * Draws the item options
+     * @param y
+     * @param item
+     * @param selected 
+     */
     private void drawOptionRect(int y, Item item, boolean selected) {
         String text = item.getName();
         int price = item.getPrice();
@@ -132,7 +150,14 @@ public class Menu {
         graphics.drawString(text, 35, (height * y) + (height / 4), 0, selected);
         graphics.drawString(price + "kr", width1 + 1, (height * y) + (height / 4), 0, selected);
     }
-
+    /**
+     * Allows one simple method call for both filled and unfilled rectangles
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param fill 
+     */
     private void drawRectBetter(int x, int y, int width, int height, boolean fill) {
         if (!fill) {
             graphics.drawRect(x, y, width, height);
@@ -140,7 +165,10 @@ public class Menu {
             graphics.fillRect(x, y, width, height);
         }
     }
-
+    /**
+     * Checks keyinputs and acts accordingly
+     * @param keyVal 
+     */
     public void checkKeys(ButtonType keyVal) {
         if (menuLevel == 0 && items.size() > 0) {
             if (keyVal == ButtonType.Up) {
@@ -168,7 +196,9 @@ public class Menu {
             }
         }
     }
-
+    /**
+     * Purchases the currently selected item
+     */
     public void purchaseItem() {
         Item selected = items.get(menuSelection);
         selected.reduceStockSize();
@@ -180,7 +210,10 @@ public class Menu {
         Main.WALLET -= selected.getPrice();
         Stock.save();
     }
-
+    /**
+     * Updates the currently selected item
+     * @param change 
+     */
     private void updateMenuSelection(int change) {
         menuSelection += change;
         if (menuSelection >= items.size()) {
@@ -190,7 +223,9 @@ public class Menu {
         }
         drawMenu();
     }
-
+    /**
+     * Updates the currently selected confirmation option
+     */
     private void updateConfirmationSelection() {
         if (confSelection == 0) {
             confSelection++;
@@ -199,7 +234,10 @@ public class Menu {
         }
         drawMenu();
     }
-
+    /**
+     * Updates the current menu level
+     * @param change 
+     */
     private void updateMenuLevel(int change) {
         menuLevel += change;
         drawMenu();
