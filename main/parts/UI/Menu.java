@@ -29,13 +29,17 @@ public class Menu {
     private int menuSelection = 0;
     private int confSelection = 0;
     private int menuLevel = 0;
-
+    /** 
+     * Constructor for the menu class, initializer.
+     */
     public Menu() {
         items = Stock.get();
         screenWidth = graphics.getWidth();
         screenHeight = graphics.getHeight();
     }
-
+    /**
+     * main drawing method, calls the other subdrawing methods when needed
+     */
     public void drawMenu() {
         graphics.clear();
         drawChangeSection();
@@ -57,9 +61,13 @@ public class Menu {
             drawConfirmOption(items.get(menuSelection));
         }
     }
-
+    /**
+     * Notifies the user when all items are out of stock
+     */
     private void drawOutOfStockNotice() {
-        // TODO
+        int height = screenHeight / 2;
+        graphics.setFont(Font.getLargeFont());
+        graphics.drawString("Out of stock!", 0, height, 0);
     }
 
     private void drawChangeSection() {
