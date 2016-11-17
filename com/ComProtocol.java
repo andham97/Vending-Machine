@@ -9,4 +9,5 @@ public class ComProtocol {
     public static final int PACKET_DISPENSE_SLOT = 2;
     public static final int PACKET_STORE_MONEY   = 3;
     public static final int PACKET_REFUND_MONEY  = 4;
+    public static final int PACKET_SHUTDOWN      = 5;
 }

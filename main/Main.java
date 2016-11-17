@@ -1,9 +1,6 @@
 package main;
 
-import java.util.ArrayList;
-import lejos.hardware.Sound;
 import main.parts.SensorController;
-import main.parts.UI.Item;
 import main.parts.UIController;
 import main.util.Task;
 import main.util.TaskQueue;
@@ -19,18 +16,23 @@ public class Main {
     private SensorController sensorController;
     private UIController uiController;
     private SlaveController slaveController;
+    //private Music music;
+    
+    private boolean musicPlaying;
 
     public Main() {
         Main.queue = new TaskQueue();
         this.sensorController = new SensorController();
         this.uiController = new UIController();
         this.slaveController = new SlaveController();
+        //music = new Music();
     }
 
     public Main start() {
         Main.isRunning = true;
         this.uiController.start();
         this.slaveController.start();
+        //music.startThread();
         return this;
     }
 
@@ -42,6 +44,7 @@ public class Main {
                     switch (task.getTaskType()) {
                         case MoneyAdded:
                             Main.WALLET += ((TaskMoneyAdded) task).getData();
+                            //music.makeItRain();
                             uiController.render();
                             break;
                             

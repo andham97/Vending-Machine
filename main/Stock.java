@@ -18,53 +18,28 @@ public class Stock {
     
     private static final ArrayList<Item> originalStock = new ArrayList<>();
     static {
-        originalStock.add(new Item("Melkerull", 20, SlotID.Bottom));
+        originalStock.add(new Item("Melkerull", 15, SlotID.Top));
         originalStock.add(new Item("Smil", 20, SlotID.Middle)); 
-        originalStock.add(new Item("Melkebart", 15, SlotID.Top));
+        originalStock.add(new Item("Melkebart", 20, SlotID.Bottom));
     }
     
     private static ArrayList<Item> currentStock = null;
+    
+    public static final Object lock = new Object();
     
     /**
      * Refills stock, setting 4 items in stock for all items.
      */
     public static void refill() {
-        currentStock.clear();
-        for (Item origItem : originalStock) {
-            // Copy item from originalStock and add
-            Item item = new Item(origItem);
-            item.setStockSize(4);
-            currentStock.add(item);
-        }
-        save();
-    }
-
-    private static void save(ArrayList<Item> curStock) {
-        try {
-            StringBuilder encoded = new StringBuilder();
-            for (Item original : originalStock) {
-                
-                int numInStock = 0;
-                
-                // Checks if this item exists in currentStock, meaning there
-                // are more than one of this item left in stock
-                for (Item item : curStock) {
-                    if (item.getName().equals(original.getName())) {
-                        numInStock = item.getStockSize();
-                        break;
-                    }
-                }
-                
-                encoded.append(original.getName()).append("=")
-                       .append(numInStock).append(" ");
+        synchronized (lock) {
+            currentStock.clear();
+            for (Item origItem : originalStock) {
+                // Copy item from originalStock and add
+                Item item = new Item(origItem);
+                item.setStockSize(4);
+                currentStock.add(item);
             }
-
-            FileOutputStream stream = new FileOutputStream(FILENAME, false);
-            stream.write(encoded.toString().getBytes("UTF-8"));
-            stream.close();
-
-        } catch (IOException ex) {
-            System.err.println("Error writing stock file: " + ex.getMessage());
+            save();
         }
     }
     
@@ -72,8 +47,35 @@ public class Stock {
      * Saves the current item list to stock file. 
      */
     public static void save() {
-        if (currentStock != null) {
-            save(currentStock);
+        synchronized (lock) {
+            if (currentStock != null) {
+                try {
+                    StringBuilder encoded = new StringBuilder();
+                    for (Item original : originalStock) {
+
+                        int numInStock = 0;
+
+                        // Checks if this item exists in currentStock, meaning there
+                        // are more than one of this item left in stock
+                        for (Item item : currentStock) {
+                            if (item.getName().equals(original.getName())) {
+                                numInStock = item.getStockSize();
+                                break;
+                            }
+                        }
+
+                        encoded.append(original.getName()).append("=")
+                               .append(numInStock).append(" ");
+                    }
+
+                    FileOutputStream stream = new FileOutputStream(FILENAME, false);
+                    stream.write(encoded.toString().getBytes("UTF-8"));
+                    stream.close();
+
+                } catch (IOException ex) {
+                    System.err.println("Error writing stock file: " + ex.getMessage());
+                }
+            }
         }
     }
     
@@ -82,49 +84,45 @@ public class Stock {
      * @return 
      */
     public static ArrayList<Item> get() {
-        if (currentStock == null) {
-            currentStock = new ArrayList<>();
-            load(currentStock);
-        }
-        return currentStock;
-    }
-    
-    private static void load(ArrayList<Item> items) {
-        try {
-            File file = new File(FILENAME);
-            FileInputStream stream = new FileInputStream(FILENAME);
-            byte[] bytes = new byte[(int) file.length()];
-            stream.read(bytes);
-            stream.close();
-            String content = new String(bytes, "UTF-8");
+        synchronized (lock) {
+            if (currentStock == null) {
+                currentStock = new ArrayList<>();
+                try {
+                    File file = new File(FILENAME);
+                    FileInputStream stream = new FileInputStream(FILENAME);
+                    byte[] bytes = new byte[(int) file.length()];
+                    stream.read(bytes);
+                    stream.close();
+                    String content = new String(bytes, "UTF-8");
 
-            items.clear();
+                    currentStock.clear();
 
-            for (String rawItem : content.split(" ")) {
-                if (!rawItem.equals("")) {
-                    String[] itemProps = rawItem.split("=");
-                    
-                    // Only add to item list if there are any in stock
-                    if (!itemProps[3].equals("0")) {
-                        for (Item origItem : originalStock) {
-                            if (origItem.getName().equals(itemProps[0])) {
-                                Item item = new Item(origItem);
-                                item.setStockSize(Integer.parseInt(itemProps[1]));
-                                break;
+                    for (String rawItem : content.split(" ")) {
+                        if (!rawItem.equals("")) {
+                            String[] itemProps = rawItem.split("=");
+
+                            // Only add to item list if there are any in stock
+                            if (!itemProps[1].equals("0")) {
+                                for (Item origItem : originalStock) {
+                                    if (origItem.getName().equals(itemProps[0])) {
+                                        Item item = new Item(origItem);
+                                        item.setStockSize(Integer.parseInt(itemProps[1]));
+                                        currentStock.add(item);
+                                        break;
+                                    }
+                                }
                             }
                         }
                     }
+
+                } catch (IOException | NumberFormatException ex) {
+                    System.out.println("Error reading stock file: " + ex.getMessage()
+                            + ", using originalStock");
+
+                    refill();
                 }
             }
-
-        } catch (Exception ex) {
-            System.out.println("Error reading stock file: " + ex.getMessage()
-                    + ", using originalStock");
-            
-            items.clear();
-            for (Item origItem : originalStock) {
-                items.add(origItem);
-            }
         }
+        return currentStock;
     }
 }

@@ -8,6 +8,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import lejos.hardware.BrickFinder;
+import lejos.hardware.lcd.Font;
 import lejos.hardware.motor.Motor;
 import lejos.robotics.RegulatedMotor;
 
@@ -38,10 +39,8 @@ public class SlaveMain {
     }
     
     private void connectToMaster() throws IOException {
-        System.out.print("Kobler til ");
+        System.out.println("Kobler til...");
         String masterIp = BrickFinder.find("MASTER")[0].getIPAddress();
-        System.out.println(masterIp + ":9999");
-        
         connection = new Socket(masterIp, 9999);
         connection.setTcpNoDelay(true);
         in = new DataInputStream(new BufferedInputStream(connection.getInputStream()));
@@ -72,6 +71,11 @@ public class SlaveMain {
                         case ComProtocol.PACKET_REFUND_MONEY:
                             refundMoney();
                             break;
+                            
+                        case ComProtocol.PACKET_SHUTDOWN:
+                            System.out.println("Shutdown");
+                            running = false;
+                            break;
 
                         default:
                             System.out.println("Unknown packet: " + packetType
@@ -80,7 +84,7 @@ public class SlaveMain {
                 }
             }
             catch (IOException ex) {
-                System.out.println("IO ERROR: " + ex.getMessage());
+                System.out.println("I/O ERROR: " + ex.getMessage());
             }
         }
     }
@@ -92,8 +96,8 @@ public class SlaveMain {
     }
     
     private void storeMoney() {
-        moneyShelfMotor.rotate(-90);
-        moneyShelfMotor.rotate(90);
+        moneyShelfMotor.rotate(-120);
+        moneyShelfMotor.rotate(120);
     }
     
     private void refundMoney() {
@@ -104,13 +108,13 @@ public class SlaveMain {
     private void dispenseSlot(int slotNum) {
         switch (slotNum) {
             case 1:
-                slotMotorBottom.rotate(520);
-                slotMotorBottom.rotate(-520);
+                slotMotorBottom.rotate(400);
+                slotMotorBottom.rotate(-400);
                 break;
                 
             case 2:
-                slotMotorMiddle.rotate(-520);
-                slotMotorMiddle.rotate(520);
+                slotMotorMiddle.rotate(-400);
+                slotMotorMiddle.rotate(400);
                 break;
                 
             case 3:
@@ -136,6 +140,7 @@ public class SlaveMain {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        System.out.println("Starter...");
         try {
             running = true;
             SlaveMain slave = new SlaveMain();
@@ -143,7 +148,7 @@ public class SlaveMain {
             slave.start();
             slave.closeConnections();
         } catch (IOException ex) {
-            System.err.println("IO ERROR: " + ex.getMessage());
+            System.err.println("I/O ERROR: " + ex.getMessage());
         }
     }
 }

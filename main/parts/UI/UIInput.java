@@ -24,30 +24,39 @@ public class UIInput implements Runnable {
     }
 
     public void run() {
+        boolean quitKeysLast = false;
+        boolean adminKeysLast = false;
+        boolean quitKeys, adminKeys;
         while (Main.isRunning) {
-            if (this.keyReleased) {
-                if (checkQuitKeys()) {
-                    Main.queue.addTask(new TaskQuit(Priority.High));
-                } else if (checkAdminKeys()) {
-                    Main.queue.addTask(new TaskRefillStock(Priority.Low));
-                } else {
-                    int keyVal = this.keys.getButtons();
-                    if ((Keys.ID_UP & keyVal) != 0) {
-                        this.keyReleased = false;
-                        UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Up));
-                    }
-                    if ((Keys.ID_DOWN & keyVal) != 0) {
-                        this.keyReleased = false;
-                        UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Down));
-                    }
-                    if ((Keys.ID_ESCAPE & keyVal) != 0) {
-                        this.keyReleased = false;
-                        UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Escape));
-                    }
-                    if ((Keys.ID_ENTER & keyVal) != 0) {
-                        this.keyReleased = false;
-                        UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Enter));
-                    }
+            
+            quitKeys = checkQuitKeys();
+            adminKeys = checkAdminKeys();
+            
+            if (quitKeys && !quitKeysLast) {
+                Main.queue.addTask(new TaskQuit(Priority.High));
+            } else if (adminKeys && !adminKeysLast) {
+                Main.queue.addTask(new TaskRefillStock(Priority.Low));
+            }
+            quitKeysLast = quitKeys;
+            adminKeysLast = adminKeys;
+            
+            if (this.keyReleased && !quitKeys && !adminKeys) {
+                int keyVal = this.keys.getButtons();
+                if ((Keys.ID_UP & keyVal) != 0) {
+                    this.keyReleased = false;
+                    UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Up));
+                }
+                if ((Keys.ID_DOWN & keyVal) != 0) {
+                    this.keyReleased = false;
+                    UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Down));
+                }
+                if ((Keys.ID_ESCAPE & keyVal) != 0) {
+                    this.keyReleased = false;
+                    UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Escape));
+                }
+                if ((Keys.ID_ENTER & keyVal) != 0) {
+                    this.keyReleased = false;
+                    UIController.queue.addTask(new TaskButtonPress(Priority.Medium, ButtonType.Enter));
                 }
             } else if (this.keys.getButtons() == 0) {
                 this.keyReleased = true;
@@ -62,7 +71,7 @@ public class UIInput implements Runnable {
     private boolean checkQuitKeys() {
         int keyVal = this.keys.getButtons();
         int idRight = Keys.ID_RIGHT;
-        int idLeft = Keys.ID_LEFT;
+        int idLeft = Keys.ID_DOWN;
         return ((keyVal & idRight) != 0 && (keyVal & idLeft) != 0);
     }
 }

@@ -43,22 +43,25 @@ public class Menu {
     public void drawMenu() {
         graphics.clear();
         drawChangeSection();
-        if (menuLevel == 0) {
-            int nr = 0;
-            if (items.size() > 0) {
-                for (Item item : items) {
-                    if (nr == menuSelection) {
-                        drawOptionRect(nr + 1, item, true);
-                    } else {
-                        drawOptionRect(nr + 1, item, false);
+        
+        synchronized (Stock.lock) {
+            if (menuLevel == 0) {
+                int nr = 0;
+                if (items.size() > 0) {
+                    for (Item item : items) {
+                        if (nr == menuSelection) {
+                            drawOptionRect(nr + 1, item, true);
+                        } else {
+                            drawOptionRect(nr + 1, item, false);
+                        }
+                        nr++;
                     }
-                    nr++;
+                } else {
+                    drawOutOfStockNotice();
                 }
-            } else {
-                drawOutOfStockNotice();
+            } else if (menuLevel == 1) {
+                drawConfirmOption(items.get(menuSelection));
             }
-        } else if (menuLevel == 1) {
-            drawConfirmOption(items.get(menuSelection));
         }
     }
     /**
@@ -67,7 +70,7 @@ public class Menu {
     private void drawOutOfStockNotice() {
         int height = screenHeight / 2;
         graphics.setFont(Font.getLargeFont());
-        graphics.drawString("Out of stock!", 0, height, 0);
+        graphics.drawString("Tomt! \\m/", 0, height, 0);
     }
     /**
      * Draws the top section that shows the user's money, and the return button
@@ -78,7 +81,7 @@ public class Menu {
         int height = screenHeight / 4;
         graphics.drawRect(posX, 0, width, height);
         graphics.setFont(Font.getLargeFont());
-        graphics.drawString(Main.WALLET + "kr", posX, 0, 0);
+        graphics.drawString(Main.WALLET + "kr", posX, 2, 0);
         int lineXAngle1 = 55;
         int lineXAngle2 = 70;
         graphics.drawLine(0, 0, 0, height);
@@ -87,7 +90,7 @@ public class Menu {
         graphics.drawLine(lineXAngle2, height / 2, lineXAngle2, 0);
         graphics.drawLine(lineXAngle2, 0, 0, 0);
         graphics.setFont(Font.getDefaultFont());
-        graphics.drawString("Veksel", 0, height / 4, 0);
+        graphics.drawString(" Retur", 0, height / 4, 0);
     }
     /**
      * Draws the confirmation options in the second level of the menu
@@ -176,11 +179,13 @@ public class Menu {
             } else if (keyVal == ButtonType.Down) {
                 updateMenuSelection(1);
             } else if (keyVal == ButtonType.Enter) {
-                if (Main.WALLET >= items.get(menuSelection).getPrice()
-                        && items.get(menuSelection).getStockSize() > 0) {
-                    updateMenuLevel(1);
+                synchronized (Stock.lock) {
+                    if (Main.WALLET >= items.get(menuSelection).getPrice()
+                            && items.get(menuSelection).getStockSize() > 0) {
+                        updateMenuLevel(1);
+                    }
                 }
-            } else if (keyVal == ButtonType.Escape) {
+            } else if (keyVal == ButtonType.Escape && Main.WALLET > 0) {
                 SlaveController.queue.addTask(new TaskRefundMoney(Priority.High));
                 Main.WALLET = 0;
                 drawMenu();
@@ -200,10 +205,13 @@ public class Menu {
      * Purchases the currently selected item
      */
     public void purchaseItem() {
-        Item selected = items.get(menuSelection);
-        selected.reduceStockSize();
-        if (selected.getStockSize() <= 0) {
-            items.remove(menuSelection);
+        Item selected;
+        synchronized(Stock.lock) {
+            selected = items.get(menuSelection);
+            selected.reduceStockSize();
+            if (selected.getStockSize() <= 0) {
+                items.remove(menuSelection);
+            }
         }
         SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
         SlaveController.queue.addTask(new TaskStoreMoney(Priority.High));

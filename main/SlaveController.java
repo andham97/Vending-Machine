@@ -92,6 +92,10 @@ public class SlaveController implements Runnable {
                     }
                 }
             }
+            
+            out.writeInt(ComProtocol.PACKET_SHUTDOWN);
+            out.writeInt(0);
+            out.flush();
 
             out.close();
             in.close();
