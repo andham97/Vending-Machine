@@ -4,6 +4,12 @@ import main.parts.sensors.ColorSensorEV3;
 import main.parts.sensors.ColorSensorNXT;
 import main.parts.sensors.Sensor;
 
+/**
+ * The slave sensor controller checking the sensors and notifying the master brick with money inserted
+ * 
+ * @author Magnus C. Hyll <magnus@hyll.no>
+ *
+ */
 public class SlaveSensorListener implements Runnable {
 
 	/**

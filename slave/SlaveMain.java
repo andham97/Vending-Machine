@@ -12,6 +12,8 @@ import lejos.hardware.motor.Motor;
 import lejos.robotics.RegulatedMotor;
 
 /**
+ * The main slave controller handling data connection with the master brick
+ * Handling the data received and executing the appropriate command
  *
  * @author Magnus C. Hyll <magnus@hyll.no>
  */
