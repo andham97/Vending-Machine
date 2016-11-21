@@ -5,9 +5,23 @@ import main.enums.SlotID;
 import main.enums.TaskType;
 import main.util.Task;
 
+/**
+ * A task sub class representing the dispense slot action
+ * 
+ * @author Magnus C. Hyll <magnus@hyll.no>
+ * @author andreashammer
+ */
 public class TaskDispenseSlot extends Task {
+	
+	/**
+	 * The data carried in the task
+	 */
 	private int DATA;
 
+	/**
+	 * @param p Task priority
+	 * @param id The slot ID the task contains
+	 */
 	public TaskDispenseSlot(Priority p, SlotID id) {
 		super(p, TaskType.Dispense);
 		switch(id){
@@ -25,6 +39,9 @@ public class TaskDispenseSlot extends Task {
 		}
 	}
 	
+	/**
+	 * @return The slot ID of the task
+	 */
 	public int getData(){
 		return this.DATA;
 	}

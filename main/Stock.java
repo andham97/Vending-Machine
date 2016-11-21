@@ -9,13 +9,20 @@ import main.enums.SlotID;
 import main.parts.UI.Item;
 
 /**
+ * A class handling the stock and storing it on the file system
  *
  * @author Magnus C. Hyll <magnus@hyll.no>
  */
 public class Stock {
 
+	/**
+	 * The stock filename for storing the stock if shutdown
+	 */
     private final static String FILENAME = "stock.txt";
     
+    /**
+     * The original stock initialized with the items available
+     */
     private static final ArrayList<Item> originalStock = new ArrayList<>();
     static {
         originalStock.add(new Item("Melkerull", 15, SlotID.Top));
@@ -23,8 +30,14 @@ public class Stock {
         originalStock.add(new Item("Melkebart", 20, SlotID.Bottom));
     }
     
+    /**
+     * An object holding the current stock
+     */
     private static ArrayList<Item> currentStock = null;
     
+    /**
+     * Object used when synchronizing executing of shared resources
+     */
     public static final Object lock = new Object();
     
     /**
@@ -34,8 +47,10 @@ public class Stock {
         synchronized (lock) {
             currentStock.clear();
             for (Item origItem : originalStock) {
-                // Copy item from originalStock and add
-                Item item = new Item(origItem);
+                /*
+            	* Copy item from originalStock and add
+                */
+            	Item item = new Item(origItem);
                 item.setStockSize(4);
                 currentStock.add(item);
             }
@@ -55,8 +70,10 @@ public class Stock {
 
                         int numInStock = 0;
 
-                        // Checks if this item exists in currentStock, meaning there
-                        // are more than one of this item left in stock
+                        /*
+                         *  Checks if this item exists in currentStock,
+                         *  meaning there are more than one of this item left in stock
+                         */
                         for (Item item : currentStock) {
                             if (item.getName().equals(original.getName())) {
                                 numInStock = item.getStockSize();
@@ -80,14 +97,17 @@ public class Stock {
     }
     
     /**
-     * Returns the current item list, excluding items which are out of stock.
-     * @return 
+     * @return The current item list, excluding items which are out of stock.
      */
     public static ArrayList<Item> get() {
         synchronized (lock) {
             if (currentStock == null) {
                 currentStock = new ArrayList<>();
                 try {
+                	
+                	/*
+                	 * Read the data from the stock file
+                	 */
                     File file = new File(FILENAME);
                     FileInputStream stream = new FileInputStream(FILENAME);
                     byte[] bytes = new byte[(int) file.length()];
@@ -97,11 +117,16 @@ public class Stock {
 
                     currentStock.clear();
 
+                    /*
+                     * Adding the items to the current stock list
+                     */
                     for (String rawItem : content.split(" ")) {
                         if (!rawItem.equals("")) {
                             String[] itemProps = rawItem.split("=");
 
-                            // Only add to item list if there are any in stock
+                            /*
+                             * Only add to item list if there are any in stock
+                             */
                             if (!itemProps[1].equals("0")) {
                                 for (Item origItem : originalStock) {
                                     if (origItem.getName().equals(itemProps[0])) {

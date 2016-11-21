@@ -1,6 +1,5 @@
 package main;
 
-import main.parts.SensorController;
 import main.parts.UIController;
 import main.util.Task;
 import main.util.TaskQueue;
@@ -9,33 +8,50 @@ import main.util.task.exceptions.IllegalTaskException;
 
 public class Main {
 
+	/**
+	 * A variable that the entire system uses as the isRunning variable
+	 */
     public static boolean isRunning = false;
-    public static TaskQueue queue;
-    public static int WALLET = 0;
-
-    private SensorController sensorController;
-    private UIController uiController;
-    private SlaveController slaveController;
-    //private Music music;
     
-    private boolean musicPlaying;
+    /**
+     * The class' queue for 
+     */
+    public static TaskQueue queue;
+    
+    /**
+     * Storing the amount of money the user has inserted into the system
+     */
+    public static int WALLET = 0;
+    
+    /**
+     * A reference to the uicontroller class
+     */
+    private UIController uiController;
+    
+    /**
+     * A reference to the scale controller class
+     */
+    private SlaveController slaveController;
 
     public Main() {
         Main.queue = new TaskQueue();
-        this.sensorController = new SensorController();
         this.uiController = new UIController();
         this.slaveController = new SlaveController();
-        //music = new Music();
     }
 
+    /**
+     * @return reference to this object for easier writing in the Launch class
+     */
     public Main start() {
         Main.isRunning = true;
         this.uiController.start();
         this.slaveController.start();
-        //music.startThread();
         return this;
     }
 
+    /**
+     * The main run loop processing the different system tasks
+     */
     public void run() {
         while (Main.isRunning) {
             Task task = Main.queue.getNext();
@@ -44,7 +60,6 @@ public class Main {
                     switch (task.getTaskType()) {
                         case MoneyAdded:
                             Main.WALLET += ((TaskMoneyAdded) task).getData();
-                            //music.makeItRain();
                             uiController.render();
                             break;
                             

@@ -1,9 +1,17 @@
 package main.enums.exceptions;
 
+/**
+ * Exception used when a TaskButtonPress data is not a valid button
+ * 
+ * @author andreashammer
+ */
+@SuppressWarnings("serial")
 public class IllegalButtonTypeExteption extends Exception {
-	private static final long serialVersionUID = 7423071089330950325L;
 
-	public IllegalButtonTypeExteption(String s){
-		super(s);
+	/**
+	 * @param string The exception message
+	 */
+	public IllegalButtonTypeExteption(String string) {
+		super(string);
 	}
 }
