@@ -8,6 +8,7 @@ import java.util.ArrayList;
  * @author andreashammer
  */
 public class TaskQueue {
+	
 	/**
 	 * An array storing the tasks waiting to be executed
 	 */

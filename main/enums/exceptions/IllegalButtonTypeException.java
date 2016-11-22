@@ -6,12 +6,12 @@ package main.enums.exceptions;
  * @author andreashammer
  */
 @SuppressWarnings("serial")
-public class IllegalButtonTypeExteption extends Exception {
+public class IllegalButtonTypeException extends Exception {
 
 	/**
 	 * @param string The exception message
 	 */
-	public IllegalButtonTypeExteption(String string) {
+	public IllegalButtonTypeException(String string) {
 		super(string);
 	}
 }

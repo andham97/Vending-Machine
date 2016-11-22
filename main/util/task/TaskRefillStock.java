@@ -12,6 +12,8 @@ import main.util.Task;
 public class TaskRefillStock extends Task {
 	
 	/**
+	 * Initialized a new refill stock task
+	 * 
 	 * @param p The task priority
 	 */
     public TaskRefillStock(Priority p) {

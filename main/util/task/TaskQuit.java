@@ -12,6 +12,8 @@ import main.util.Task;
 public class TaskQuit extends Task {
 	
 	/**
+	 * Initializes a new quit task with the specified priority
+	 * 
 	 * @param p The task priority
 	 */
 	public TaskQuit(Priority p){

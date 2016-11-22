@@ -5,6 +5,7 @@ package main.util.task.exceptions;
  * 
  * @author andreashammer
  */
+
 @SuppressWarnings("serial")
 public class IllegalTaskException extends Exception {
 	

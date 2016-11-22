@@ -8,6 +8,7 @@ package main;
  * @author andreashammer
  */
 public class Launch {
+	
 	/**
 	 * Main method starting the different threads and the main run loop
 	 * 

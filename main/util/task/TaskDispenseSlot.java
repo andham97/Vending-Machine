@@ -16,9 +16,11 @@ public class TaskDispenseSlot extends Task {
 	/**
 	 * The data carried in the task
 	 */
-	private int DATA;
+	private final int DATA;
 
 	/**
+	 * Initialize a new instance of the class TaskDispenseSlot
+	 * 
 	 * @param p Task priority
 	 * @param id The slot ID the task contains
 	 */

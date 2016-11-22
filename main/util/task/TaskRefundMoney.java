@@ -12,6 +12,8 @@ import main.util.Task;
 public class TaskRefundMoney extends Task {
 
 	/**
+	 * Initialized a new refund money task
+	 * 
 	 * @param p The task priority
 	 */
     public TaskRefundMoney(Priority p) {

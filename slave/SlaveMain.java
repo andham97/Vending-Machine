@@ -76,6 +76,23 @@ public class SlaveMain {
     }
     
     /**
+     * Send a packet with the amount of money inserted by the customer
+     * 
+     * @param payload The data to send the master brick
+     */
+    public synchronized void sendMoneyAddedPacket(int payload) {
+        try {
+            out.writeInt(ComProtocol.PACKET_MONEY_ADDED);
+            out.writeInt(payload);
+            out.flush();
+        }
+        catch (IOException ex) {
+            System.err.println("Error sending PACKET_MONEY_ADDED: "
+                    + ex.getMessage());
+        }
+    }
+    
+    /**
      * Connection to the master brick
      * 
      * @throws IOException
@@ -185,23 +202,6 @@ public class SlaveMain {
                 slotMotorTop.rotate(-260);
                 slotMotorTop.rotate(260);
                 break;
-        }
-    }
-    
-    /**
-     * Send a packet with the amount of money inserted by the customer
-     * 
-     * @param payload The data to send the master brick
-     */
-    public synchronized void sendMoneyAddedPacket(int payload) {
-        try {
-            out.writeInt(ComProtocol.PACKET_MONEY_ADDED);
-            out.writeInt(payload);
-            out.flush();
-        }
-        catch (IOException ex) {
-            System.err.println("Error sending PACKET_MONEY_ADDED: "
-                    + ex.getMessage());
         }
     }
 

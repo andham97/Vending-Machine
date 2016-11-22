@@ -18,7 +18,7 @@ public class Stock {
 	/**
 	 * The stock filename for storing the stock if shutdown
 	 */
-    private final static String FILENAME = "stock.txt";
+    private static final String FILENAME = "stock.txt";
     
     /**
      * The original stock initialized with the items available

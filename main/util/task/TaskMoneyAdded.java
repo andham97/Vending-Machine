@@ -14,21 +14,23 @@ public class TaskMoneyAdded extends Task {
 	/**
 	 * The data stored in the task
 	 */
-    private final int amount;
+    private final int DATA;
 
     /**
+     * Initialize a new instance of the class TaskMoneyAdded with priority level and data
+     * 
      * @param pri The task priority
      * @param amount The data stored in the task
      */
     public TaskMoneyAdded(Priority pri, int amount) {
         super(pri, TaskType.MoneyAdded);
-        this.amount = amount;
+        this.DATA = amount;
     }
 
     /**
      * @return The data stored in the task
      */
     public int getData() {
-        return amount;
+        return DATA;
     }
 }

@@ -2,7 +2,7 @@ package main.parts;
 
 import main.Main;
 import main.enums.ButtonType;
-import main.enums.exceptions.IllegalButtonTypeExteption;
+import main.enums.exceptions.IllegalButtonTypeException;
 import main.parts.UI.Menu;
 import main.parts.UI.UIInput;
 import main.util.Task;
@@ -99,7 +99,7 @@ public class UIController implements Runnable {
                                     break;
                                     
                                 default:
-                                    throw new IllegalButtonTypeExteption("Not a registered button: " + bt.toString());
+                                    throw new IllegalButtonTypeException("Not a registered button: " + bt.toString());
                             }
                             break;
                             

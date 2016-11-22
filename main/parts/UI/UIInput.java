@@ -19,7 +19,7 @@ import main.util.task.TaskRefillStock;
 public class UIInput implements Runnable {
 
 	/**
-	 * Reference to the Keys object inorder to read the pressed keys
+	 * Reference to the Keys object in order to read the pressed keys
 	 */
     private Keys keys;
     

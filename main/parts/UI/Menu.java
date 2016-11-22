@@ -34,7 +34,7 @@ public class Menu {
 	/**
 	 * Reference to the graphics context of the EV3 screen
 	 */
-	private GraphicsLCD graphics = LocalEV3.get().getGraphicsLCD();
+	private GraphicsLCD graphics;
 	
 	/**
 	 * Store the screen width for easy access
@@ -71,6 +71,7 @@ public class Menu {
 		items = Stock.get();
 		screenWidth = graphics.getWidth();
 		screenHeight = graphics.getHeight();
+		graphics = LocalEV3.get().getGraphicsLCD();
 	}
 
 	/**
@@ -111,6 +112,70 @@ public class Menu {
 				drawConfirmOption(items.get(menuSelection));
 			}
 		}
+	}
+
+	/**
+	 * Process the key value and update the menu level and/or selection based on
+	 * the user input
+	 * 
+	 * @param keyVal ButtonType representing the key pressed
+	 */
+	public void checkKeys(ButtonType keyVal) {
+		/*
+		 * Navigate the main menu and select the item to purchase
+		 */
+		if (menuLevel == 0 && items.size() > 0) {
+			if (keyVal == ButtonType.Up) {
+				updateMenuSelection(-1);
+			} else if (keyVal == ButtonType.Down) {
+				updateMenuSelection(1);
+			} else if (keyVal == ButtonType.Enter) {
+				synchronized (Stock.lock) {
+					if (Main.WALLET >= items.get(menuSelection).getPrice()
+							&& items.get(menuSelection).getStockSize() > 0) {
+						updateMenuLevel(1);
+					}
+				}
+			} else if (keyVal == ButtonType.Escape && Main.WALLET > 0) {
+				SlaveController.queue.addTask(new TaskRefundMoney(Priority.High));
+				Main.WALLET = 0;
+				drawMenu();
+			}
+		}
+
+		/*
+		 * Confirm the purchase Navigate the confirmation screen Or exit back to
+		 * the main menu
+		 */
+		else if (menuLevel == 1) {
+			if (keyVal == ButtonType.Up || keyVal == ButtonType.Down) {
+				updateConfirmationSelection();
+			} else if (keyVal == ButtonType.Enter) {
+				if (confSelection == 0) {
+					purchaseItem();
+				}
+				updateMenuLevel(-1);
+			}
+		}
+	}
+
+	/**
+	 * Purchases the currently selected item Notify the different parts of the
+	 * system based on the purchased item
+	 */
+	public void purchaseItem() {
+		Item selected;
+		synchronized (Stock.lock) {
+			selected = items.get(menuSelection);
+			selected.reduceStockSize();
+			if (selected.getStockSize() <= 0) {
+				items.remove(menuSelection);
+			}
+		}
+		SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
+		SlaveController.queue.addTask(new TaskStoreMoney(Priority.High));
+		Main.WALLET -= selected.getPrice();
+		Stock.save();
 	}
 
 	/**
@@ -248,70 +313,6 @@ public class Menu {
 		} else {
 			graphics.fillRect(x, y, width, height);
 		}
-	}
-
-	/**
-	 * Process the key value and update the menu level and/or selection based on
-	 * the user input
-	 * 
-	 * @param keyVal ButtonType representing the key pressed
-	 */
-	public void checkKeys(ButtonType keyVal) {
-		/*
-		 * Navigate the main menu and select the item to purchase
-		 */
-		if (menuLevel == 0 && items.size() > 0) {
-			if (keyVal == ButtonType.Up) {
-				updateMenuSelection(-1);
-			} else if (keyVal == ButtonType.Down) {
-				updateMenuSelection(1);
-			} else if (keyVal == ButtonType.Enter) {
-				synchronized (Stock.lock) {
-					if (Main.WALLET >= items.get(menuSelection).getPrice()
-							&& items.get(menuSelection).getStockSize() > 0) {
-						updateMenuLevel(1);
-					}
-				}
-			} else if (keyVal == ButtonType.Escape && Main.WALLET > 0) {
-				SlaveController.queue.addTask(new TaskRefundMoney(Priority.High));
-				Main.WALLET = 0;
-				drawMenu();
-			}
-		}
-
-		/*
-		 * Confirm the purchase Navigate the confirmation screen Or exit back to
-		 * the main menu
-		 */
-		else if (menuLevel == 1) {
-			if (keyVal == ButtonType.Up || keyVal == ButtonType.Down) {
-				updateConfirmationSelection();
-			} else if (keyVal == ButtonType.Enter) {
-				if (confSelection == 0) {
-					purchaseItem();
-				}
-				updateMenuLevel(-1);
-			}
-		}
-	}
-
-	/**
-	 * Purchases the currently selected item Notify the different parts of the
-	 * system based on the purchased item
-	 */
-	public void purchaseItem() {
-		Item selected;
-		synchronized (Stock.lock) {
-			selected = items.get(menuSelection);
-			selected.reduceStockSize();
-			if (selected.getStockSize() <= 0) {
-				items.remove(menuSelection);
-			}
-		}
-		SlaveController.queue.addTask(new TaskDispenseSlot(Priority.Medium, selected.getSlotId()));
-		SlaveController.queue.addTask(new TaskStoreMoney(Priority.High));
-		Main.WALLET -= selected.getPrice();
-		Stock.save();
 	}
 
 	/**

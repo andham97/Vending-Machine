@@ -18,6 +18,7 @@ public class TaskButtonPress extends Task {
 	private final ButtonType DATA;
 	
 	/**
+	 * Initialize a new instance of the class TaskButtonPress
 	 * 
 	 * @param p Priority level
 	 * @param d Task's data

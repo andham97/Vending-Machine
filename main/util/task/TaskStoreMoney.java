@@ -12,6 +12,8 @@ import main.util.Task;
 public class TaskStoreMoney extends Task {
 
 	/**
+	 * Initialize a new store money task
+	 * 
 	 * @param p The task priority
 	 */
     public TaskStoreMoney(Priority p) {
