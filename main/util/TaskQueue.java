@@ -23,7 +23,7 @@ public class TaskQueue {
 	/**
 	 * Add a task to the queue
 	 * 
-	 * @param The task to be added to the queue
+	 * @param task The task to be added to the queue
 	 */
 	public void addTask(Task task){
 		tasks.add(task);
@@ -41,7 +41,8 @@ public class TaskQueue {
 			else if(tmp != null && tmp.checkPriorityLevel(curTask.getPriority()))
 				curTask = tmp;
 		}
-		tasks.remove(curTask);
+		if(curTask != null)
+			tasks.remove(curTask);
 		return curTask;
 	}
 }
