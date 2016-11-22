@@ -25,7 +25,7 @@ public class Stock {
      */
     private static final ArrayList<Item> originalStock = new ArrayList<>();
     static {
-        originalStock.add(new Item("Melkerull", 15, SlotID.Top));
+        originalStock.add(new Item("Oreorull", 20, SlotID.Top));
         originalStock.add(new Item("Smil", 20, SlotID.Middle)); 
         originalStock.add(new Item("Melkebart", 20, SlotID.Bottom));
     }
